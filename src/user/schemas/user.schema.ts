@@ -3,16 +3,18 @@ import { HydratedDocument } from 'mongoose';
 
 export type UserDocument = HydratedDocument<User>;
 
-@Schema({ timestamps: true })
+@Schema({
+  timestamps: true,
+})
 export class User {
+  @Prop()
+  name: string;
+
   @Prop({ required: true, unique: true })
   email: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, select: false })
   password: string;
-
-  @Prop()
-  name: string;
 
   @Prop({ default: 'user', enum: ['user', 'admin'] })
   role: 'user' | 'admin';

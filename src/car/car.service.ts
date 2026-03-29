@@ -38,7 +38,7 @@ export class CarService {
     return this.carModel.find().exec();
   }
 
-  async findOne(id: string): Promise<CarDocument> {
+  async findById(id: string): Promise<CarDocument> {
     if (!isValidObjectId(id)) {
       throw new BadRequestException('Invalid car ID');
     }
