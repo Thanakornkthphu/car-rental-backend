@@ -5,9 +5,11 @@ import { CarService } from './car.service';
 import { CarController } from './car.controller';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Car.name, schema: CarSchema }])],
-  controllers: [CarController],
-  providers: [CarService],
-  exports: [CarService],
+	imports: [
+		MongooseModule.forFeature([{ name: Car.name, schema: CarSchema }]),
+	],
+	controllers: [CarController],
+	providers: [CarService],
+	exports: [CarService],
 })
 export class CarModule {}

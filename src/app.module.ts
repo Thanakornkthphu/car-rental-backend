@@ -9,20 +9,20 @@ import { CarModule } from './car/car.module';
 import { BookingModule } from './booking/booking.module';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-    MongooseModule.forRootAsync({
-      useFactory: (config: ConfigService) => ({
-        uri: config.get<string>('MONGO_URI'),
-      }),
-      inject: [ConfigService],
-    }),
-    UserModule,
-    AuthModule,
-    CarModule,
-    BookingModule,
-  ],
-  controllers: [AppController],
-  providers: [AppService],
+	imports: [
+		ConfigModule.forRoot({ isGlobal: true }),
+		MongooseModule.forRootAsync({
+			useFactory: (config: ConfigService) => ({
+				uri: config.get<string>('MONGO_URI'),
+			}),
+			inject: [ConfigService],
+		}),
+		UserModule,
+		AuthModule,
+		CarModule,
+		BookingModule,
+	],
+	controllers: [AppController],
+	providers: [AppService],
 })
 export class AppModule {}

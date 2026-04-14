@@ -1,26 +1,26 @@
 import {
-  IsEmail,
-  IsNotEmpty,
-  IsString,
-  IsStrongPassword,
+	IsEmail,
+	IsNotEmpty,
+	IsString,
+	IsStrongPassword,
 } from 'class-validator';
 
 export class SignupDto {
-  @IsString()
-  @IsNotEmpty()
-  name: string;
+	@IsString()
+	@IsNotEmpty()
+	name: string;
 
-  @IsEmail()
-  @IsNotEmpty()
-  email: string;
+	@IsEmail()
+	@IsNotEmpty()
+	email: string;
 
-  @IsString()
-  @IsStrongPassword({
-    minLength: 8,
-    minLowercase: 1,
-    minUppercase: 1,
-    minNumbers: 1,
-    minSymbols: 1,
-  })
-  password: string;
+	@IsString()
+	@IsStrongPassword({
+		minLength: 8,
+		minLowercase: 1,
+		minUppercase: 1,
+		minNumbers: 1,
+		minSymbols: 1,
+	})
+	password: string;
 }

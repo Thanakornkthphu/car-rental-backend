@@ -4,20 +4,23 @@ import { HydratedDocument } from 'mongoose';
 export type UserDocument = HydratedDocument<User>;
 
 @Schema({
-  timestamps: true,
+	timestamps: true,
 })
 export class User {
-  @Prop()
-  name: string;
+	@Prop()
+	name: string;
 
-  @Prop({ required: true, unique: true })
-  email: string;
+	@Prop({ required: true, unique: true })
+	email: string;
 
-  @Prop({ required: true, select: false })
-  password: string;
+	@Prop({ required: true })
+	password: string;
 
-  @Prop({ default: 'user', enum: ['user', 'admin'] })
-  role: 'user' | 'admin';
+	@Prop({ default: 'user', enum: ['user', 'admin'] })
+	role: 'user' | 'admin';
+
+	createdAt: Date;
+	updatedAt: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

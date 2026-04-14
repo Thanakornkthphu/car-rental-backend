@@ -1,51 +1,51 @@
 import {
-  IsEnum,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  Min,
+	IsEnum,
+	IsNotEmpty,
+	IsNumber,
+	IsOptional,
+	IsString,
+	Min,
 } from 'class-validator';
 
 export class CreateCarDto {
-  @IsString()
-  @IsNotEmpty()
-  brand: string;
+	@IsString()
+	@IsNotEmpty()
+	brand: string;
 
-  @IsString()
-  @IsNotEmpty()
-  model: string;
+	@IsString()
+	@IsNotEmpty()
+	model: string;
 
-  @IsNumber()
-  @Min(1990)
-  year: number;
+	@IsNumber()
+	@Min(1990)
+	year: number;
 
-  @IsString()
-  @IsNotEmpty()
-  licensePlate: string;
+	@IsString()
+	@IsNotEmpty()
+	licensePlate: string;
 
-  @IsNumber()
-  @Min(0)
-  pricePerDay: number;
+	@IsNumber()
+	@Min(0)
+	pricePerDay: number;
 
-  @IsString()
-  @IsOptional()
-  color?: string;
+	@IsString()
+	@IsOptional()
+	color?: string;
 
-  @IsNumber()
-  @Min(4)
-  @IsOptional()
-  seats?: number;
+	@IsNumber()
+	@Min(4)
+	@IsOptional()
+	seats?: number;
 
-  @IsEnum(['auto', 'manual'])
-  @IsOptional()
-  transmission?: string;
+	@IsEnum(['auto', 'manual'])
+	@IsOptional()
+	transmission?: string;
 
-  @IsEnum(['petrol', 'diesel', 'ev', 'hybrid'])
-  @IsOptional()
-  fuelType?: string;
+	@IsEnum(['petrol', 'diesel', 'ev', 'hybrid'])
+	@IsOptional()
+	fuelType?: string;
 
-  @IsString()
-  @IsOptional()
-  image?: string;
+	@IsString()
+	@IsOptional()
+	image?: string;
 }
