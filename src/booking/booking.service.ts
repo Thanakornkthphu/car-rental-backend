@@ -1,10 +1,9 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Booking, BookingDocument } from './schemas/booking.schema';
 import { Model } from 'mongoose';
 import { CarService } from 'src/car/car.service';
-import { UpdateBookingDto } from './dto/update-booking.dto';
 
 @Injectable()
 export class BookingService {
@@ -67,8 +66,10 @@ export class BookingService {
 	}
 
 	// find all bookings
-	findAll() {
-		return `This action returns all booking`;
+	async getAllBooking() {
+		const bookings = await this.bookingModel.find().exec();
+		
+		return bookings
 	}
 
 	// find one booking
@@ -77,12 +78,28 @@ export class BookingService {
 	}
 
 	// update booking
-	update(userId: string, bookingId: string, updateBookingDto: UpdateBookingDto) {
+	update(userId: string, bookingId: string) {
 		return `This action updates a #${bookingId} booking`;
 	}
 
-	// delete booking
-	remove(userId: string, bookingId: string, updateBookingDto: UpdateBookingDto) {
-		return `This action removes a #${bookingId} booking`;
+	async remove(userId: string, bookingId: string) {
+		const booking = await this.bookingModel.findById(bookingId).exec();
+
+		if (!booking) {
+			throw new NotFoundException('Booking not found');
+		}
+
+		if (booking.user.toString() !== userId) {
+			throw new ForbiddenException('You are not allowed to cancel this booking');
+		}
+
+		if (booking.status === 'cancelled') {
+			throw new BadRequestException('Booking is already cancelled');
+		}
+
+		booking.status = 'cancelled';
+		await booking.save();
+
+		return { message: 'Booking cancelled successfully' };
 	}
 }

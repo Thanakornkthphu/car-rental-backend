@@ -33,7 +33,7 @@ export class CarService {
 
 
 	// find all
-	async findAll(): Promise<CarDocument[]> {
+	async getAllCars(): Promise<CarDocument[]> {
 		return this.carModel.find().exec();
 	}
 
@@ -55,9 +55,7 @@ export class CarService {
 			throw new BadRequestException('Invalid car ID');
 		}
 		try {
-			const result = await this.carModel
-				.findByIdAndUpdate(id, updateCarDto, { new: true })
-				.exec();
+			const result = await this.carModel.findByIdAndUpdate(id, updateCarDto, { new: true }).exec();
 			if (!result) {
 				throw new NotFoundException('Car not found');
 			}

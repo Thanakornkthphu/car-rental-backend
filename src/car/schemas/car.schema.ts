@@ -33,7 +33,7 @@ export class Car {
 
 	@Prop({
 		default: 'petrol',
-		enum: ['petrol', 'diesel', 'electric', 'hybrid'],
+		enum: ['petrol', 'diesel', 'ev', 'hybrid'],
 	})
 	fuelType: string;
 

@@ -13,6 +13,7 @@ import { BookingService } from './booking.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import * as AuthTypes from 'src/auth/types/jwt-payload';
 
 @Controller('booking')
 export class BookingController {
@@ -22,54 +23,38 @@ export class BookingController {
 	@UseGuards(JwtAuthGuard)
 	create(
 		@Body() createBookingDto: CreateBookingDto,
-		@Req() req: { 
-			user: {
-				userId: string;
-			}
-		 } 
+		@Req() req: AuthTypes.RequestWithUser,
 	) {
 		return this.bookingService.create(req.user.userId, createBookingDto);
 	}
 
 	@Get()
-	findAll() {
-		return this.bookingService.findAll();
+	getAllBooking() {
+		return this.bookingService.getAllBooking();
 	}
 
-	@Get(':id')
+	@Get(':bookingId')
 	findOne(
-		@Param('id') id: string,
-		@Req() req: { 
-			user: {
-				userId: string;
-			}
-		 } 
+		@Param('bookingId') bookingId: string,
+		@Req() req: AuthTypes.RequestWithUser,
 	) {
-		return this.bookingService.findOne(req.user.userId, id);
+		return this.bookingService.findOne(req.user.userId, bookingId);
 	}
 
 	@Patch(':id')
 	update(
-		@Param('id') id: string,
+		@Param('id') bookingId: string,
 		@Body() updateBookingDto: UpdateBookingDto,
-		@Req() req: { 
-			user: {
-				userId: string;
-			}
-		 } 
+		@Req() req: AuthTypes.RequestWithUser,
 	) {
-		return this.bookingService.update(req.user.userId, id, updateBookingDto);
+		return this.bookingService.update(req.user.userId, bookingId);
 	}
 
-	@Delete(':id')
+	@Delete(':bookingId')
 	remove(
-		@Param('id') id: string,
-		@Req() req: { 
-			user: {
-				userId: string;
-			}
-		 } 
+		@Param('bookingId') bookingId: string,
+		@Req() req: AuthTypes.RequestWithUser,
 	) {
-		return this.bookingService.remove(req.user.userId, id, UpdateBookingDto);
+		return this.bookingService.remove(req.user.userId, bookingId);
 	}
 }
