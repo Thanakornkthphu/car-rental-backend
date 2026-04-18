@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Booking, BookingDocument } from './schemas/booking.schema';
 import { Model } from 'mongoose';
 import { CarService } from 'src/car/car.service';
+import { QueryBookingDto } from './dto/qurey-booking.dto';
 
 @Injectable()
 export class BookingService {
@@ -66,10 +67,50 @@ export class BookingService {
 	}
 
 	// find all bookings
-	async getAllBooking() {
-		const bookings = await this.bookingModel.find().exec();
-		
-		return bookings
+	async getAll(userId: string, role: string, query: QueryBookingDto) {
+		const { page, limit, sortBy, sortOrder, status } = query;
+
+		const filter: Record<string, string | number | Date> = {}
+
+		if (role !== 'admin') {
+			filter.user = userId;
+		}
+
+		if (status) {
+			filter.status = status;
+		}
+
+		const pageNumber = parseInt(page ?? '1') || 1;
+		const limitNumber = parseInt(limit ?? '10') || 10;
+		const skip = (pageNumber - 1) * limitNumber;
+
+		const sortByString = sortBy ?? 'createdAt';
+		const sortOrderNumber = sortOrder === 'asc' ? 1 : -1;
+		//  1 = asc (น้อย → มาก, เก่า → ใหม่)
+		// -1 = desc (มาก → น้อย, ใหม่ → เก่า)
+
+		const bookingsQuery = this.bookingModel
+			.find(filter)
+			.populate('car')
+			.sort({ [sortByString]: sortOrderNumber })
+			.skip(skip)
+			.limit(limitNumber)
+			.exec()
+
+		const totalQuery = this.bookingModel.countDocuments(filter);
+
+		const [bookings, total] = await Promise.all([bookingsQuery, totalQuery]);
+
+		return {
+			message: 'Bookings fetched successfully',
+			data: bookings,
+			meta: {
+				total,
+				page,
+				limit,
+				totalPages: Math.ceil(total / limitNumber),
+			}
+		}
 	}
 
 	// find one booking
