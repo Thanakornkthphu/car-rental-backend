@@ -114,8 +114,18 @@ export class BookingService {
 	}
 
 	// find one booking
-	findOne(userId: string, bookingId: string) {
-		return `This action returns a #${bookingId} booking`;
+	async findOne(userId: string, role: string, bookingId: string) {
+		const booking = await this.bookingModel.findById(bookingId).populate('car').exec();
+
+		if (!booking) {
+			throw new NotFoundException('Booking not found');
+		}
+
+		if (booking.user.toString() !== userId && role === 'user') {
+			throw new ForbiddenException('You are not allowed to view this booking');
+		}
+
+		return booking;
 	}
 
 	// update booking

@@ -31,6 +31,7 @@ export class BookingController {
 	}
 
 	@Get()
+	@UseGuards(JwtAuthGuard)
 	getAll(
 		@Query() query: QueryBookingDto,
 		@Req() req: AuthTypes.RequestWithUser,
@@ -39,14 +40,16 @@ export class BookingController {
 	}
 
 	@Get(':bookingId')
+	@UseGuards(JwtAuthGuard)
 	findOne(
 		@Param('bookingId') bookingId: string,
 		@Req() req: AuthTypes.RequestWithUser,
 	) {
-		return this.bookingService.findOne(req.user.userId, bookingId);
+		return this.bookingService.findOne(req.user.userId, req.user.role, bookingId);
 	}
 
 	@Patch(':id')
+	@UseGuards(JwtAuthGuard)
 	update(
 		@Param('id') bookingId: string,
 		@Body() updateBookingDto: UpdateBookingDto,
@@ -56,6 +59,7 @@ export class BookingController {
 	}
 
 	@Delete(':bookingId')
+	@UseGuards(JwtAuthGuard)
 	remove(
 		@Param('bookingId') bookingId: string,
 		@Req() req: AuthTypes.RequestWithUser,
