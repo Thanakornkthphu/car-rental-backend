@@ -14,6 +14,8 @@ import { BookingService } from './booking.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
 import * as AuthTypes from 'src/auth/types/jwt-payload';
 import { QueryBookingDto } from './dto/qurey-booking.dto';
 
@@ -48,14 +50,14 @@ export class BookingController {
 		return this.bookingService.findOne(req.user.userId, req.user.role, bookingId);
 	}
 
-	@Patch(':id')
-	@UseGuards(JwtAuthGuard)
+	@Patch(':bookingId')
+	@UseGuards(JwtAuthGuard, RolesGuard)
+	@Roles('admin')
 	update(
-		@Param('id') bookingId: string,
+		@Param('bookingId') bookingId: string,
 		@Body() updateBookingDto: UpdateBookingDto,
-		@Req() req: AuthTypes.RequestWithUser,
 	) {
-		return this.bookingService.update(req.user.userId, bookingId);
+		return this.bookingService.update(bookingId, updateBookingDto);
 	}
 
 	@Delete(':bookingId')
@@ -64,6 +66,6 @@ export class BookingController {
 		@Param('bookingId') bookingId: string,
 		@Req() req: AuthTypes.RequestWithUser,
 	) {
-		return this.bookingService.remove(req.user.userId, bookingId);
+		return this.bookingService.remove(req.user.userId, req.user.role, bookingId);
 	}
 }

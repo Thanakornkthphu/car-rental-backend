@@ -1,9 +1,7 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateBookingDto } from './create-booking.dto';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty } from 'class-validator';
 
-export class UpdateBookingDto extends PartialType(CreateBookingDto) {
-    @IsString()
+export class UpdateBookingDto {
     @IsNotEmpty()
-    car: string;
+    @IsEnum(['pending', 'confirmed', 'completed', 'cancelled'])
+    status: 'pending' | 'confirmed' | 'completed' | 'cancelled';
 }

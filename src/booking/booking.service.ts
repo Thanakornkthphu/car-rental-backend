@@ -1,5 +1,6 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateBookingDto } from './dto/create-booking.dto';
+import { UpdateBookingDto } from './dto/update-booking.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Booking, BookingDocument } from './schemas/booking.schema';
 import { Model } from 'mongoose';
@@ -128,19 +129,38 @@ export class BookingService {
 		return booking;
 	}
 
-	// update booking
-	update(userId: string, bookingId: string) {
-		return `This action updates a #${bookingId} booking`;
-	}
-
-	async remove(userId: string, bookingId: string) {
+	// update booking status (admin only)
+	async update(bookingId: string, updateBookingDto: UpdateBookingDto) {
 		const booking = await this.bookingModel.findById(bookingId).exec();
 
 		if (!booking) {
 			throw new NotFoundException('Booking not found');
 		}
 
-		if (booking.user.toString() !== userId) {
+		booking.status = updateBookingDto.status;
+		await booking.save();
+
+		return {
+			message: 'Booking updated successfully',
+			booking: {
+				id: booking._id,
+				car: booking.car,
+				startDate: booking.startDate,
+				endDate: booking.endDate,
+				totalPrice: booking.totalPrice,
+				status: booking.status,
+			},
+		};
+	}
+
+	async remove(userId: string, role: string, bookingId: string) {
+		const booking = await this.bookingModel.findById(bookingId).exec();
+
+		if (!booking) {
+			throw new NotFoundException('Booking not found');
+		}
+
+		if (role !== 'admin' && booking.user.toString() !== userId) {
 			throw new ForbiddenException('You are not allowed to cancel this booking');
 		}
 

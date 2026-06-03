@@ -1,13 +1,13 @@
-import { IsEnum, IsNumber, IsOptional } from "class-validator";
+import { IsEnum, IsOptional, IsString } from "class-validator";
 
 
 export class QueryBookingDto {
     @IsOptional()
-    @IsNumber()
+    @IsString()
     page?: string;
 
     @IsOptional()
-    @IsNumber()
+    @IsString()
     limit?: string;
 
     @IsOptional()

@@ -30,8 +30,17 @@ export class UserService {
 		return this.userModel.findOne({ email }).exec();
 	}
 
-	async findUserById(id: string): Promise<UserDocument | null> {
-		return this.userModel.findById(id).exec();
+	async findUserById(id: string) {
+		const user = await this.userModel.findById(id).exec();
+		if (!user) return null;
+		return {
+			id: user._id,
+			name: user.name,
+			email: user.email,
+			role: user.role,
+			createdAt: user.createdAt,
+			updatedAt: user.updatedAt,
+		};
 	}
 
 	async findAllUsers() {
