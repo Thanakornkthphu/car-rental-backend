@@ -16,7 +16,7 @@ export class Car {
 	@Prop({ required: true })
 	year: number;
 
-	@Prop({ required: true, unique: true })
+	@Prop({ unique: true, sparse: true })
 	licensePlate: string;
 
 	@Prop({ required: true })
@@ -42,6 +42,9 @@ export class Car {
 
 	@Prop({ default: true })
 	available: boolean;
+
+	@Prop({ default: 'available', enum: ['available', 'coming_soon'] })
+	status: string;
 }
 
 export const CarSchema = SchemaFactory.createForClass(Car);

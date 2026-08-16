@@ -22,7 +22,8 @@ export class CreateCarDto {
 
 	@IsString()
 	@IsNotEmpty()
-	licensePlate: string;
+	@IsOptional()
+	licensePlate?: string;
 
 	@IsNumber()
 	@Min(0)
@@ -48,4 +49,8 @@ export class CreateCarDto {
 	@IsString()
 	@IsOptional()
 	image?: string;
+
+	@IsEnum(['available', 'coming_soon'])
+	@IsOptional()
+	status?: string;
 }

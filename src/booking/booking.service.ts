@@ -23,6 +23,10 @@ export class BookingService {
 			throw new NotFoundException('Car not found');
 		}
 
+		if (car.status === 'coming_soon') {
+			throw new BadRequestException('This car is not available for booking yet');
+		}
+
 		const startDate = new Date(createBookingDto.startDate); // 10
 		const endDate = new Date(createBookingDto.endDate); // 15
 
