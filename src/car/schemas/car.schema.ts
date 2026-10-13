@@ -5,6 +5,12 @@ export type CarDocument = HydratedDocument<Car>;
 
 @Schema({
 	timestamps: true,
+	toJSON: {
+		transform: (_document, car) => {
+			Reflect.deleteProperty(car, 'available');
+			return car;
+		},
+	},
 })
 export class Car {
 	@Prop({ required: true })
@@ -42,9 +48,6 @@ export class Car {
 
 	@Prop({ type: [String], default: [] })
 	images: string[];
-
-	@Prop({ default: true })
-	available: boolean;
 
 	@Prop({ default: 'available', enum: ['available', 'coming_soon'] })
 	status: string;
