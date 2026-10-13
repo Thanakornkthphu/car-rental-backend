@@ -40,6 +40,9 @@ export class Car {
 	@Prop()
 	image: string;
 
+	@Prop({ type: [String], default: [] })
+	images: string[];
+
 	@Prop({ default: true })
 	available: boolean;
 

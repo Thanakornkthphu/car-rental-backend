@@ -1,9 +1,11 @@
 import {
+	IsArray,
 	IsEnum,
 	IsNotEmpty,
 	IsNumber,
 	IsOptional,
 	IsString,
+	IsUrl,
 	Min,
 } from 'class-validator';
 
@@ -49,6 +51,11 @@ export class CreateCarDto {
 	@IsString()
 	@IsOptional()
 	image?: string;
+
+	@IsArray()
+	@IsUrl({ protocols: ['http', 'https'], require_protocol: true }, { each: true })
+	@IsOptional()
+	images?: string[];
 
 	@IsEnum(['available', 'coming_soon'])
 	@IsOptional()
