@@ -46,7 +46,11 @@ export class BookingService {
 		}
 
 		const msPerDay = 24 * 60 * 60 * 1000;
-		const totalDays = Math.ceil((endDate.getTime() - startDate.getTime()) / msPerDay);
+		const gracePeriodMs = 3 * 60 * 60 * 1000;
+		const durationMs = endDate.getTime() - startDate.getTime();
+		const fullDays = Math.floor(durationMs / msPerDay);
+		const extraDay = durationMs % msPerDay > gracePeriodMs ? 1 : 0;
+		const totalDays = Math.max(1, fullDays + extraDay);
 
 		const totalPrice = totalDays * car.pricePerDay;
 
