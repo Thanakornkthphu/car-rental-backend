@@ -39,6 +39,18 @@ describe('BookingService', () => {
 		service = module.get<BookingService>(BookingService);
 	});
 
+	it('rejects a car booked after the availability search', async () => {
+		bookingModel.findOne.mockReturnValue({
+			exec: jest.fn().mockResolvedValue({ _id: 'another-booking' }),
+		});
+		await expect(service.create('user-id', {
+			car: 'car-id',
+			startDate: '2027-01-01T08:00:00Z',
+			endDate: '2027-01-02T12:00:00Z',
+		})).rejects.toThrow('Car is already booked for this date range');
+		expect(bookingModel.create).not.toHaveBeenCalled();
+	});
+
 	it.each([
 		['2027-01-01T09:00:00Z', 1],
 		['2027-01-02T08:00:00Z', 1],

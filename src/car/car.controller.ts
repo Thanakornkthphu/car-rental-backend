@@ -7,10 +7,12 @@ import {
 	Param,
 	Delete,
 	UseGuards,
+	Query,
 } from '@nestjs/common';
 import { CarService } from './car.service';
 import { CreateCarDto } from './dto/create-car.dto';
 import { UpdateCarDto } from './dto/update-car.dto';
+import { QueryCarDto } from './dto/query-car.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -27,8 +29,8 @@ export class CarController {
 	}
 
 	@Get()
-	getAllCars() {
-		return this.carService.getAllCars();
+	getAllCars(@Query() query: QueryCarDto) {
+		return this.carService.getAllCars(query);
 	}
 
 	@Get(':id')

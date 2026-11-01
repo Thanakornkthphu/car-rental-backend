@@ -10,11 +10,14 @@ import { isValidObjectId, Model } from 'mongoose';
 import { isDuplicateKeyError } from '../Utils/Utils';
 import { Car, CarDocument } from './schemas/car.schema';
 import { InjectModel } from '@nestjs/mongoose';
+import { Booking, BookingDocument } from '../booking/schemas/booking.schema';
+import { QueryCarDto } from './dto/query-car.dto';
 
 @Injectable()
 export class CarService {
 	constructor(
 		@InjectModel(Car.name) private readonly carModel: Model<CarDocument>,
+		@InjectModel(Booking.name) private readonly bookingModel: Model<BookingDocument>,
 	) {}
 
 
@@ -33,8 +36,34 @@ export class CarService {
 
 
 	// find all
-	async getAllCars(): Promise<CarDocument[]> {
-		return this.carModel.find().exec();
+	async getAllCars(query: QueryCarDto = {}): Promise<CarDocument[]> {
+		const { startDate, endDate } = query;
+
+		if (startDate === undefined && endDate === undefined) {
+			return this.carModel.find().exec();
+		}
+
+		if (startDate === undefined || endDate === undefined) {
+			throw new BadRequestException('startDate and endDate must be provided together');
+		}
+
+		const start = new Date(startDate);
+		const end = new Date(endDate);
+
+		if (end <= start) {
+			throw new BadRequestException('End date must be after start date');
+		}
+
+		const bookedCarIds = await this.bookingModel.distinct('car', {
+			status: { $ne: 'cancelled' },
+			startDate: { $lte: end },
+			endDate: { $gte: start },
+		}).exec();
+
+		return this.carModel.find({
+			_id: { $nin: bookedCarIds },
+			$or: [{ status: 'available' }, { status: { $exists: false } }],
+		}).exec();
 	}
 
 	// find by id
